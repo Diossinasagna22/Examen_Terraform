@@ -33,15 +33,25 @@ resource "aws_security_group" "nginx_sg" {
 }
 
 resource "aws_instance" "vm" {
-  ami                    = "ami-0fe8bec493a81c7da"  # Ubuntu 22.04 en us-east-1
+  ami                    = "ami-0c7217cdde317cfec"  # Ubuntu Server 22.04 LTS - us-east-1
   instance_type          = "t3.micro"
-  key_name              = var.aws_key_name
+  key_name               = var.aws_key_name
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
-  
-  # S'assurer que l'instance a une IP publique
   associate_public_ip_address = true
+
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update -y
+              sudo apt install nginx -y
+              sudo systemctl start nginx
+              sudo systemctl enable nginx
+              EOF
 
   tags = {
     Name = "vm-aws-nginx"
   }
+}
+
+output "public_ip" {
+  value = aws_instance.vm.public_ip
 }
