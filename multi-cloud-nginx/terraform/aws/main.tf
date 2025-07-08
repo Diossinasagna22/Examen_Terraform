@@ -51,7 +51,3 @@ resource "aws_instance" "vm" {
     Name = "vm-aws-nginx"
   }
 }
-
-output "public_ip" {
-  value = aws_instance.vm.public_ip
-}
