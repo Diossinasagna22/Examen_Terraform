@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-north-1"
+  region = "us-east-1"
 }
 
 # Security Group pour autoriser HTTP et SSH
@@ -33,7 +33,7 @@ resource "aws_security_group" "nginx_sg" {
 }
 
 resource "aws_instance" "vm" {
-  ami                    = "ami-0fe8bec493a81c7da"  # Ubuntu 22.04 en eu-north-1
+  ami                    = "ami-0fe8bec493a81c7da"  # Ubuntu 22.04 en us-east-1
   instance_type          = "t3.micro"
   key_name              = var.aws_key_name
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
