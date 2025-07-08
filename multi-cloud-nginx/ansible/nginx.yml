@@ -31,6 +31,11 @@
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <title>🚀 Nginx sur AWS</title>
+              <div class="header">
+               <h1 style="font-size: 2.5em;">👨‍💻 Louis Joseph Diossina SAGNA</h1>
+                <h2>🚀 Déploiement Réussi!</h2>
+                <p>Infrastructure provisionnée et configurée automatiquement</p>
+              </div>
               <style>
                   * {
                       margin: 0;
