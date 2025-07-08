@@ -1,0 +1,48 @@
+name: Provision & Configure AWS VM with Nginx
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_DEFAULT_REGION: eu-north-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TF_VAR_aws_key_name: ${{ secrets.TF_VAR_aws_key_name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/aws.pem
+          chmod 600 ~/.ssh/aws.pem
+
+      - name: Terraform Init & Apply
+        run: |
+          cd multi-cloud-nginx/terraform/aws
+          terraform init
+          terraform apply -auto-approve
+          terraform output -raw aws_public_ip > ../../scripts/ip.txt
+          echo "{\"aws\":\"$(cat ../../scripts/ip.txt)\"}" > ../../scripts/ips.json
+
+      - name: Generate Ansible Inventory
+        run: |
+          cd multi-cloud-nginx/scripts
+          python3 generate_inventory.py
+
+      - name: Install Ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible
+
+      - name: Run Ansible Playbook
+        run: |
+          cd multi-cloud-nginx/ansible
+          ansible-playbook -i inventory.ini nginx.yml --ssh-common-args='-o StrictHostKeyChecking=no'
