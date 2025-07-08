@@ -3,43 +3,260 @@
   hosts: aws
   become: yes
   gather_facts: yes
+
   vars:
     nginx_port: 80
-    
+
   tasks:
     - name: Attendre que l'instance soit prête
       wait_for_connection:
         timeout: 300
-        
+
     - name: Update apt cache
       apt:
         update_cache: yes
         cache_valid_time: 3600
-        
+
     - name: Installer nginx
       apt:
         name: nginx
         state: present
-        
+
     - name: Créer une page HTML personnalisée
       copy:
         content: |
           <!DOCTYPE html>
-          <html>
+          <html lang="fr">
           <head>
-              <title>Nginx sur AWS</title>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>🚀 Nginx sur AWS</title>
               <style>
-                  body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-                  .container { max-width: 600px; margin: 0 auto; }
-                  .success { color: #28a745; }
+                  * {
+                      margin: 0;
+                      padding: 0;
+                      box-sizing: border-box;
+                  }
+                  
+                  body {
+                      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      min-height: 100vh;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      padding: 20px;
+                  }
+                  
+                  .container {
+                      max-width: 900px;
+                      width: 100%;
+                      background: rgba(255, 255, 255, 0.95);
+                      border-radius: 20px;
+                      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                      overflow: hidden;
+                      animation: fadeIn 1s ease-out;
+                  }
+                  
+                  @keyframes fadeIn {
+                      from { opacity: 0; transform: translateY(30px); }
+                      to { opacity: 1; transform: translateY(0); }
+                  }
+                  
+                  .header {
+                      background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+                      color: white;
+                      padding: 40px;
+                      text-align: center;
+                      position: relative;
+                      overflow: hidden;
+                  }
+                  
+                  .header::before {
+                      content: '';
+                      position: absolute;
+                      top: -50%;
+                      left: -50%;
+                      width: 200%;
+                      height: 200%;
+                      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                      animation: rotate 20s linear infinite;
+                  }
+                  
+                  @keyframes rotate {
+                      from { transform: rotate(0deg); }
+                      to { transform: rotate(360deg); }
+                  }
+                  
+                  .header h1 {
+                      font-size: 3em;
+                      margin-bottom: 10px;
+                      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                      position: relative;
+                      z-index: 1;
+                  }
+                  
+                  .header p {
+                      font-size: 1.2em;
+                      opacity: 0.9;
+                      position: relative;
+                      z-index: 1;
+                  }
+                  
+                  .content {
+                      padding: 40px;
+                  }
+                  
+                  .status-badge {
+                      display: inline-block;
+                      background: linear-gradient(45deg, #28a745, #20c997);
+                      color: white;
+                      padding: 10px 20px;
+                      border-radius: 50px;
+                      font-weight: bold;
+                      margin-bottom: 30px;
+                      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+                      animation: pulse 2s ease-in-out infinite;
+                  }
+                  
+                  @keyframes pulse {
+                      0%, 100% { transform: scale(1); }
+                      50% { transform: scale(1.05); }
+                  }
+                  
+                  .info-grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 20px;
+                      margin-bottom: 30px;
+                  }
+                  
+                  .info-card {
+                      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                      padding: 25px;
+                      border-radius: 15px;
+                      border-left: 5px solid #007bff;
+                      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                      transition: transform 0.3s ease, box-shadow 0.3s ease;
+                  }
+                  
+                  .info-card:hover {
+                      transform: translateY(-5px);
+                      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                  }
+                  
+                  .info-card h3 {
+                      color: #495057;
+                      margin-bottom: 15px;
+                      font-size: 1.1em;
+                      display: flex;
+                      align-items: center;
+                      gap: 10px;
+                  }
+                  
+                  .info-card .value {
+                      font-size: 1.1em;
+                      font-weight: 600;
+                      color: #007bff;
+                  }
+                  
+                  .footer {
+                      background: #f8f9fa;
+                      padding: 30px;
+                      text-align: center;
+                      border-top: 1px solid #dee2e6;
+                  }
+                  
+                  .tech-stack {
+                      display: flex;
+                      justify-content: center;
+                      gap: 15px;
+                      flex-wrap: wrap;
+                  }
+                  
+                  .tech-item {
+                      background: white;
+                      padding: 10px 20px;
+                      border-radius: 25px;
+                      font-weight: 500;
+                      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                      border: 2px solid transparent;
+                      transition: all 0.3s ease;
+                  }
+                  
+                  .tech-item:hover {
+                      border-color: #007bff;
+                      transform: translateY(-2px);
+                  }
+                  
+                  .aws { color: #FF9900; }
+                  .terraform { color: #5C4EE5; }
+                  .ansible { color: #EE0000; }
+                  .nginx { color: #269539; }
+                  
+                  @media (max-width: 768px) {
+                      .header h1 { font-size: 2em; }
+                      .info-grid { grid-template-columns: 1fr; }
+                      .container { margin: 10px; }
+                  }
               </style>
           </head>
           <body>
               <div class="container">
-                  <h1 class="success">🎉 Nginx installé avec succès!</h1>
-                  <p>Serveur: {{ inventory_hostname }}</p>
-                  <p>Date de déploiement: {{ ansible_date_time.iso8601 }}</p>
-                  <p>Distribution: {{ ansible_distribution }} {{ ansible_distribution_version }}</p>
+                  <div class="header">
+                      <h1>🚀 Déploiement Réussi!</h1>
+                      <p>Infrastructure provisionnée et configurée automatiquement</p>
+                  </div>
+                  
+                  <div class="content">
+                      <div class="status-badge">
+                          ✅ Nginx opérationnel
+                      </div>
+                      
+                      <div class="info-grid">
+                          <div class="info-card">
+                              <h3>🖥️ Serveur</h3>
+                              <div class="value">{{ inventory_hostname }}</div>
+                          </div>
+                          
+                          <div class="info-card">
+                              <h3>🌐 IP Publique</h3>
+                              <div class="value">{{ ansible_host }}</div>
+                          </div>
+                          
+                          <div class="info-card">
+                              <h3>🔒 IP Privée</h3>
+                              <div class="value">{{ ansible_default_ipv4.address }}</div>
+                          </div>
+                          
+                          <div class="info-card">
+                              <h3>📅 Déploiement</h3>
+                              <div class="value">{{ ansible_date_time.iso8601 }}</div>
+                          </div>
+                          
+                          <div class="info-card">
+                              <h3>🐧 Système</h3>
+                              <div class="value">{{ ansible_distribution }} {{ ansible_distribution_version }}</div>
+                          </div>
+                          
+                          <div class="info-card">
+                              <h3>⚙️ Architecture</h3>
+                              <div class="value">{{ ansible_architecture }}</div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="footer">
+                      <p style="margin-bottom: 20px; color: #6c757d;">
+                          <strong>Stack technologique utilisée :</strong>
+                      </p>
+                      <div class="tech-stack">
+                          <div class="tech-item aws">☁️ AWS</div>
+                          <div class="tech-item terraform">🏗️ Terraform</div>
+                          <div class="tech-item ansible">🤖 Ansible</div>
+                          <div class="tech-item nginx">🌐 Nginx</div>
+                      </div>
+                  </div>
               </div>
           </body>
           </html>
@@ -47,50 +264,68 @@
         owner: www-data
         group: www-data
         mode: '0644'
-        
+
     - name: Configurer le firewall pour HTTP
       ufw:
         rule: allow
         port: '80'
         proto: tcp
-        
+
     - name: Configurer le firewall pour SSH
       ufw:
         rule: allow
         port: '22'
         proto: tcp
-        
+
     - name: Activer le firewall
       ufw:
         state: enabled
         policy: deny
         direction: incoming
-        
+
     - name: Démarrer et activer nginx
       systemd:
         name: nginx
         state: started
         enabled: true
         daemon_reload: true
-        
+
     - name: Vérifier le statut de nginx
       systemd:
         name: nginx
       register: nginx_status
-      
+
     - name: Afficher le statut de nginx
       debug:
         msg: "Nginx est {{ nginx_status.status.ActiveState }}"
-        
-    - name: Tester la connectivité HTTP
+
+    - name: Attendre que nginx soit disponible sur l'IP publique
+      wait_for:
+        port: 80
+        host: "{{ ansible_host }}"
+        delay: 5
+        timeout: 60
+      delegate_to: localhost
+
+    - name: Tester la connectivité HTTP avec l'IP publique
       uri:
-        url: "http://{{ inventory_hostname }}"
+        url: "http://{{ ansible_host }}"
         method: GET
         status_code: 200
+        timeout: 30
       delegate_to: localhost
       register: http_test
-      
+      retries: 3
+      delay: 5
+
     - name: Afficher le résultat du test
       debug:
-        msg: "✅ Site accessible sur http://{{ inventory_hostname }}"
+        msg: "✅ Site accessible sur http://{{ ansible_host }}"
       when: http_test.status == 200
+
+    - name: Afficher les informations finales
+      debug:
+        msg:
+          - "🎉 Déploiement terminé avec succès !"
+          - "🌐 URL du site: http://{{ ansible_host }}"
+          - "🔑 Connexion SSH: ssh -i ~/.ssh/aws.pem ubuntu@{{ ansible_host }}"
